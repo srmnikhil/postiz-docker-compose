@@ -320,6 +320,8 @@ services:
         condition: service_healthy
       temporal-elasticsearch:
         condition: service_healthy
+    entrypoint: >
+      sh -c "/etc/temporal/auto-setup.sh > /uploads/temporal.log 2>&1 || (cat /uploads/temporal.log; exit 1)"
 
     environment:
       - DB=postgres12
@@ -353,6 +355,7 @@ services:
 
     volumes:
       - './dynamicconfig:/etc/temporal/config/dynamicconfig'
+      - 'postiz-uploads:/uploads/'
 
     labels:
       kompose.volume.type: configMap
@@ -447,3 +450,12 @@ networks:
 
   temporal-network:
     external: false
+
+  log-server:
+    image: python:3.9-alpine
+    command: python -m http.server 8080 -d /uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - 'postiz-uploads:/uploads/'
+    restart: always
