@@ -444,11 +444,3 @@ networks:
   temporal-network:
     external: false
 
-  log-server:
-    image: python:3.9-alpine
-    command: python -m http.server 8080 -d /uploads
-    ports:
-      - "8080:8080"
-    volumes:
-      - 'postiz-uploads:/uploads/'
-    restart: always
