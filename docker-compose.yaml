@@ -165,7 +165,7 @@ services:
       postiz-redis:
         condition: service_healthy
       temporal:
-        condition: service_healthy
+        condition: service_started
 
 
   # ==========================================
@@ -365,7 +365,7 @@ services:
 
     depends_on:
       temporal:
-        condition: service_healthy
+        condition: service_started
 
 
   # ==========================================
@@ -399,7 +399,7 @@ services:
 
     depends_on:
       temporal:
-        condition: service_healthy
+        condition: service_started
 
 
 # ==========================================
