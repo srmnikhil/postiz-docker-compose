@@ -146,6 +146,7 @@ services:
     networks:
       - postiz-network
       - temporal-network
+      - coolify
 
     healthcheck:
       test:
@@ -444,3 +445,5 @@ networks:
   temporal-network:
     external: false
 
+  coolify:
+    external: true
