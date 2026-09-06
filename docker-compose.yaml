@@ -8,9 +8,9 @@ services:
       # =========================
       # Required Settings
       # =========================
-      MAIN_URL: '${SERVICE_URL_POSTIZ}'
-      FRONTEND_URL: '${SERVICE_URL_POSTIZ}'
-      NEXT_PUBLIC_BACKEND_URL: '${SERVICE_URL_POSTIZ}/api'
+      MAIN_URL: 'https://postiz.bodiqo.com'
+      FRONTEND_URL: 'https://postiz.bodiqo.com'
+      NEXT_PUBLIC_BACKEND_URL: 'https://postiz.bodiqo.com/api'
 
       JWT_SECRET: '${SERVICE_BASE64_64_POSTIZ}'
 
