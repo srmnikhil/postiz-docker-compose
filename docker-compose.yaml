@@ -8,9 +8,9 @@ services:
       # =========================
       # Required Settings
       # =========================
-      MAIN_URL: '${SERVICE_URL_POSTIZ_5000}'
-      FRONTEND_URL: '${SERVICE_URL_POSTIZ_5000}'
-      NEXT_PUBLIC_BACKEND_URL: '${SERVICE_URL_POSTIZ_5000}/api'
+      MAIN_URL: '${SERVICE_URL_POSTIZ}'
+      FRONTEND_URL: '${SERVICE_URL_POSTIZ}'
+      NEXT_PUBLIC_BACKEND_URL: '${SERVICE_URL_POSTIZ}/api'
 
       JWT_SECRET: '${SERVICE_BASE64_64_POSTIZ}'
 
