@@ -1,13 +1,9 @@
 services:
   postiz:
-    image: 'ghcr.io/gitroomhq/postiz-app:latest'
-    container_name: postiz
+    image: ghcr.io/gitroomhq/postiz-app:latest
     restart: always
 
     environment:
-      # =========================
-      # Required Settings
-      # =========================
       MAIN_URL: 'https://postiz.bodiqo.com'
       FRONTEND_URL: 'https://postiz.bodiqo.com'
       NEXT_PUBLIC_BACKEND_URL: 'https://postiz.bodiqo.com/api'
@@ -23,17 +19,11 @@ services:
       DISABLE_REGISTRATION: 'true'
       RUN_CRON: 'true'
 
-      # =========================
-      # Storage
-      # =========================
       STORAGE_PROVIDER: 'local'
       UPLOAD_DIRECTORY: '/uploads'
       NEXT_PUBLIC_UPLOAD_DIRECTORY: '/uploads'
 
-      # =========================
-      # Social Media API Settings
-      # =========================
-           X_API_KEY: ''
+      X_API_KEY: ''
       X_API_SECRET: ''
 
       LINKEDIN_CLIENT_ID: '${LINKEDIN_CLIENT_ID}'
@@ -78,68 +68,23 @@ services:
       MASTODON_CLIENT_ID: ''
       MASTODON_CLIENT_SECRET: ''
 
-      # =========================
-      # OAuth / Authentik
-      # =========================
-      # NEXT_PUBLIC_POSTIZ_OAUTH_DISPLAY_NAME: 'Authentik'
-      # NEXT_PUBLIC_POSTIZ_OAUTH_LOGO_URL: 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/master/png/authentik.png'
-      # POSTIZ_GENERIC_OAUTH: 'false'
-      # POSTIZ_OAUTH_URL: 'https://auth.example.com'
-      # POSTIZ_OAUTH_AUTH_URL: 'https://auth.example.com/application/o/authorize'
-      # POSTIZ_OAUTH_TOKEN_URL: 'https://auth.example.com/application/o/token'
-      # POSTIZ_OAUTH_USERINFO_URL: 'https://auth.example.com/application/o/userinfo'
-      # POSTIZ_OAUTH_CLIENT_ID: ''
-      # POSTIZ_OAUTH_CLIENT_SECRET: ''
-      # POSTIZ_OAUTH_SCOPE: 'openid profile email'
-
-      # =========================
-      # Sentry / Spotlight
-      # =========================
-      # NEXT_PUBLIC_SENTRY_DSN: 'http://spotlight:8969/stream'
-      # SENTRY_SPOTLIGHT: '1'
-
-      # =========================
-      # Misc
-      # =========================
       OPENAI_API_KEY: ''
       NEXT_PUBLIC_DISCORD_SUPPORT: ''
       NEXT_PUBLIC_POLOTNO: ''
-      API_LIMIT: 30
+      API_LIMIT: '30'
 
-      # =========================
-      # Payment / Stripe
-      # =========================
-      FEE_AMOUNT: 0.05
+      FEE_AMOUNT: '0.05'
       STRIPE_PUBLISHABLE_KEY: ''
       STRIPE_SECRET_KEY: ''
       STRIPE_SIGNING_KEY: ''
       STRIPE_SIGNING_KEY_CONNECT: ''
 
-      # =========================
-      # Developer
-      # =========================
-      NX_ADD_PLUGINS: false
-
-      # =========================
-      # Short Link Services
-      # =========================
-      # DUB_TOKEN: ''
-      # DUB_API_ENDPOINT: 'https://api.dub.co'
-      # DUB_SHORT_LINK_DOMAIN: 'dub.sh'
-      # SHORT_IO_SECRET_KEY: ''
-      # KUTT_API_KEY: ''
-      # KUTT_API_ENDPOINT: 'https://kutt.it/api/v2'
-      # KUTT_SHORT_LINK_DOMAIN: 'kutt.it'
-      # LINK_DRIP_API_KEY: ''
-      # LINK_DRIP_API_ENDPOINT: 'https://api.linkdrip.com/v1/'
-      # LINK_DRIP_SHORT_LINK_DOMAIN: 'dripl.ink'
+      NX_ADD_PLUGINS: 'false'
 
     volumes:
-      - 'postiz-config:/config/'
-      - 'postiz-uploads:/uploads/'
+      - postiz-config:/config/
+      - postiz-uploads:/uploads/
 
-    # Coolify handles the public domain/proxy.
-    # We only expose the internal application port.
     expose:
       - '5000'
 
@@ -167,13 +112,8 @@ services:
       temporal:
         condition: service_started
 
-
-  # ==========================================
-  # Postiz PostgreSQL
-  # ==========================================
   postiz-postgres:
-    image: 'postgres:17-alpine'
-    container_name: postiz-postgres
+    image: postgres:17-alpine
     restart: always
 
     environment:
@@ -182,7 +122,7 @@ services:
       POSTGRES_DB: 'postiz-db-local'
 
     volumes:
-      - 'postgres-volume:/var/lib/postgresql/data'
+      - postgres-volume:/var/lib/postgresql/data
 
     networks:
       - postiz-network
@@ -196,17 +136,12 @@ services:
       retries: 5
       start_period: 10s
 
-
-  # ==========================================
-  # Postiz Redis
-  # ==========================================
   postiz-redis:
-    image: 'redis:7.2'
-    container_name: postiz-redis
+    image: redis:7.2
     restart: always
 
     volumes:
-      - 'postiz-redis-data:/data'
+      - postiz-redis-data:/data
 
     networks:
       - postiz-network
@@ -220,48 +155,27 @@ services:
       retries: 5
       start_period: 5s
 
-
-  # ==========================================
-  # Sentry Spotlight - Debug Only
-  # ==========================================
-  spotlight:
-    profiles:
-      - debug
-    pull_policy: always
-    container_name: spotlight
-    restart: unless-stopped
-
-    ports:
-      - '127.0.0.1:8969:8969/tcp'
-
-    image: 'ghcr.io/getsentry/spotlight:latest'
-
-    networks:
-      - postiz-network
-
-
-  # ==========================================
-  # Temporal Elasticsearch
-  # ==========================================
   temporal-elasticsearch:
-    container_name: temporal-elasticsearch
-    image: 'elasticsearch:7.17.27'
+    image: elasticsearch:7.17.27
     restart: always
 
     environment:
-      - cluster.routing.allocation.disk.threshold_enabled=true
-      - cluster.routing.allocation.disk.watermark.low=512mb
-      - cluster.routing.allocation.disk.watermark.high=256mb
-      - cluster.routing.allocation.disk.watermark.flood_stage=128mb
-      - discovery.type=single-node
-      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
-      - xpack.security.enabled=false
+      cluster.routing.allocation.disk.threshold_enabled: 'true'
+      cluster.routing.allocation.disk.watermark.low: '512mb'
+      cluster.routing.allocation.disk.watermark.high: '256mb'
+      cluster.routing.allocation.disk.watermark.flood_stage: '128mb'
+      discovery.type: 'single-node'
+      ES_JAVA_OPTS: '-Xms256m -Xmx256m'
+      xpack.security.enabled: 'false'
 
     networks:
       - temporal-network
 
     expose:
       - '9200'
+
+    volumes:
+      - temporal-elasticsearch-data:/usr/share/elasticsearch/data
 
     healthcheck:
       test:
@@ -272,16 +186,8 @@ services:
       retries: 10
       start_period: 60s
 
-    volumes:
-      - 'temporal-elasticsearch-data:/usr/share/elasticsearch/data'
-
-
-  # ==========================================
-  # Temporal PostgreSQL
-  # ==========================================
   temporal-postgresql:
-    container_name: temporal-postgresql
-    image: 'postgres:16'
+    image: postgres:16
     restart: always
 
     environment:
@@ -294,6 +200,9 @@ services:
     expose:
       - '5432'
 
+    volumes:
+      - temporal-postgres-data:/var/lib/postgresql/data
+
     healthcheck:
       test:
         - CMD-SHELL
@@ -303,18 +212,9 @@ services:
       retries: 5
       start_period: 10s
 
-    volumes:
-      - 'temporal-postgres-data:/var/lib/postgresql/data'
-
-
-  # ==========================================
-  # Temporal
-  # ==========================================
   temporal:
-    container_name: temporal
+    image: temporalio/auto-setup:1.28.1
     restart: always
-
-    image: 'temporalio/auto-setup:1.28.1'
 
     depends_on:
       temporal-postgresql:
@@ -323,39 +223,29 @@ services:
         condition: service_healthy
 
     environment:
-      - DB=postgres12
-      - DB_PORT=5432
-      - POSTGRES_USER=temporal
-      - POSTGRES_PWD=temporal
-      - POSTGRES_SEEDS=temporal-postgresql
-      - ENABLE_ES=true
-      - ES_SEEDS=temporal-elasticsearch
-      - ES_VERSION=v7
-      - TEMPORAL_NAMESPACE=default
+      DB: 'postgres12'
+      DB_PORT: '5432'
+      POSTGRES_USER: 'temporal'
+      POSTGRES_PWD: 'temporal'
+      POSTGRES_SEEDS: 'temporal-postgresql'
+      ENABLE_ES: 'true'
+      ES_SEEDS: 'temporal-elasticsearch'
+      ES_VERSION: 'v7'
+      TEMPORAL_NAMESPACE: 'default'
 
     networks:
       - temporal-network
 
-    # Keep Temporal gRPC private.
-    # Postiz reaches it through temporal:7233.
     expose:
       - '7233'
 
-    labels:
-      kompose.volume.type: configMap
-
-
-  # ==========================================
-  # Temporal Admin Tools
-  # ==========================================
   temporal-admin-tools:
-    container_name: temporal-admin-tools
-    image: 'temporalio/admin-tools:1.28.1-tctl-1.18.4-cli-1.4.1'
+    image: temporalio/admin-tools:1.28.1-tctl-1.18.4-cli-1.4.1
     restart: on-failure
 
     environment:
-      - 'TEMPORAL_ADDRESS=temporal:7233'
-      - 'TEMPORAL_CLI_ADDRESS=temporal:7233'
+      TEMPORAL_ADDRESS: 'temporal:7233'
+      TEMPORAL_CLI_ADDRESS: 'temporal:7233'
 
     networks:
       - temporal-network
@@ -367,18 +257,13 @@ services:
       temporal:
         condition: service_started
 
-
-  # ==========================================
-  # Temporal UI
-  # ==========================================
   temporal-ui:
-    container_name: temporal-ui
-    image: 'temporalio/ui:2.34.0'
+    image: temporalio/ui:2.34.0
     restart: always
 
     environment:
-      - 'TEMPORAL_ADDRESS=temporal:7233'
-      - 'TEMPORAL_CORS_ORIGINS=http://127.0.0.1:3000'
+      TEMPORAL_ADDRESS: 'temporal:7233'
+      TEMPORAL_CORS_ORIGINS: 'http://127.0.0.1:3000'
 
     networks:
       - temporal-network
@@ -401,39 +286,24 @@ services:
       temporal:
         condition: service_started
 
-
-# ==========================================
-# Volumes
-# ==========================================
 volumes:
   postgres-volume:
     external: false
-
   postiz-redis-data:
     external: false
-
   postiz-config:
     external: false
-
   postiz-uploads:
     external: false
-
   temporal-postgres-data:
     external: false
-
   temporal-elasticsearch-data:
     external: false
 
-
-# ==========================================
-# Networks
-# ==========================================
 networks:
   postiz-network:
     external: false
-
   temporal-network:
     external: false
-
   coolify:
     external: true
